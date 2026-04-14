@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Insight Curator | Feature Voting Board</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#e0e3e5",
+                        "surface-container": "#eceef0",
+                        "on-secondary-container": "#00714d",
+                        "on-tertiary-container": "#4d2b00",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "on-error-container": "#93000a",
+                        "on-background": "#191c1e",
+                        "on-surface-variant": "#3e4850",
+                        "surface-bright": "#f7f9fb",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline-variant": "#bec8d2",
+                        "secondary-container": "#6cf8bb",
+                        "on-secondary-fixed": "#002113",
+                        "surface": "#f7f9fb",
+                        "primary-container": "#0ea5e9",
+                        "tertiary-container": "#de8712",
+                        "surface-dim": "#d8dadc",
+                        "on-primary-fixed": "#001e2f",
+                        "primary-fixed": "#c9e6ff",
+                        "primary": "#006591",
+                        "on-primary-container": "#003751",
+                        "background": "#f7f9fb",
+                        "surface-tint": "#006591",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb86e",
+                        "tertiary-fixed": "#ffdcbd",
+                        "on-primary-fixed-variant": "#004c6e",
+                        "primary-fixed-dim": "#89ceff",
+                        "outline": "#6e7881",
+                        "on-secondary-fixed-variant": "#005236",
+                        "on-tertiary-fixed": "#2c1600",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#e0e3e5",
+                        "secondary": "#006c49",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#89ceff",
+                        "on-surface": "#191c1e",
+                        "secondary-fixed-dim": "#4edea3",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-high": "#e6e8ea",
+                        "on-secondary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary": "#8a5100",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .voted .vote-btn-inner {
+            background-color: #e0f2fe; /* light primary */
+            border-color: #bae6fd;
+        }
+        .voted .vote-icon {
+            color: #0ea5e9;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+    <!-- TopNavBar -->
+    <nav class="w-full sticky top-0 z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+        <div class="flex items-center justify-between px-8 py-4 max-w-[1000px] mx-auto">
+            <div class="flex items-center gap-8">
+                <span class="text-xl font-bold tracking-tighter text-sky-900 dark:text-sky-100">Insight Curator</span>
+                <div class="hidden md:flex gap-6 items-center font-sans text-sm font-medium tracking-tight">
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors" href="#">Roadmap</a>
+                    <a class="text-sky-700 dark:text-sky-300 border-b-2 border-sky-600 dark:border-sky-400 pb-1" href="/">Features</a>
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors" href="/changelog">Changelog</a>
+                    <a class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors" href="/help">Help</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                {% if session.get('username') %}
+                    <a href="/profile" class="text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-sky-600 transition-colors">Welcome, <b>{{ session.get('name') }}</b></a>
+                    <a href="/logout" class="text-slate-600 dark:text-slate-400 hover:text-red-600 transition-colors font-medium text-sm">Sign Out</a>
+                {% else %}
+                    <a href="/login" class="text-slate-600 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors font-medium text-sm">Sign In</a>
+                {% endif %}
+                <a href="/#submit-idea-section" class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-4 py-2 rounded-lg text-sm font-semibold active:scale-95 duration-150 ease-in-out shadow-sm hover:shadow-md transition-all hover:text-on-primary">Submit Idea</a>
+            </div>
+        </div>
+        <div class="bg-slate-200/50 dark:bg-slate-800/50 h-[1px] w-full"></div>
+    </nav>
+    
+    <!-- Main Content Canvas -->
+    <main class="flex-grow w-full max-w-[1000px] mx-auto px-8 py-12">
+        <!-- Editorial Header Section -->
+        <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="space-y-2">
+                <h1 class="text-[2.75rem] font-extrabold tracking-tighter leading-tight text-on-surface">
+                    🚀 Feature Voting Board
+                </h1>
+                <p class="text-on-surface-variant max-w-lg text-lg leading-relaxed">
+                    Help us prioritize the future of Insight Curator. Upvote the features you need most or suggest something new.
+                </p>
+            </div>
+        </header>
+
+        <!-- Filters & Search Bar -->
+        <div class="flex flex-col md:flex-row gap-4 mb-10 items-center justify-between">
+            <div class="relative w-full md:w-96 group">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+                <input class="w-full pl-10 pr-4 py-3 bg-surface-container-high rounded-md border-none focus:ring-2 focus:ring-primary/40 focus:bg-surface-container-lowest transition-all text-sm outline-none" placeholder="Search features..." type="text"/>
+            </div>
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <span class="text-sm font-medium text-on-surface-variant">Sort by:</span>
+                <div class="relative">
+                    <select id="sort-select" class="appearance-none bg-surface-container-high px-4 py-2 pr-10 rounded-md text-sm font-semibold text-on-surface focus:ring-2 focus:ring-primary/40 outline-none border-none cursor-pointer">
+                        <option value="most_voted">Most Voted</option>
+                        <option value="newest_first">Newest First</option>
+                        <option value="in_review">In Review</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-outline text-[20px]">expand_more</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voting List container for dynamic rendering -->
+        <div id="features-list" class="space-y-6">
+            <div class="text-center p-8 text-outline">Loading features...</div>
+        </div>
+
+        <!-- Suggestion Input Area -->
+        <section id="submit-idea-section" class="mt-16 bg-surface-container-low p-8 rounded-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                <span class="material-symbols-outlined text-[80px]">lightbulb</span>
+            </div>
+            <div class="relative z-10 max-w-2xl">
+                <h4 class="text-xl font-bold text-on-surface mb-2">Have a brilliant idea?</h4>
+                <p class="text-on-surface-variant text-sm mb-6">We read every single suggestion. Let us know what would make your experience perfect.</p>
+                <form id="add-feature-form" class="space-y-4">
+                    <input id="feature-title-input" required autocomplete="off" class="w-full bg-surface-container-lowest px-4 py-4 rounded-md border-none focus:ring-2 focus:ring-primary/40 outline-none text-sm placeholder:text-outline shadow-sm" placeholder="Short, descriptive title..." type="text"/>
+                    <textarea id="feature-desc-input" rows="3" class="w-full bg-surface-container-lowest px-4 py-4 rounded-md border-none focus:ring-2 focus:ring-primary/40 outline-none text-sm placeholder:text-outline shadow-sm resize-none" placeholder="Provide more details about your idea..."></textarea>
+                    
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-gradient-to-r from-primary to-primary-container text-on-primary px-8 py-4 rounded-md text-sm font-bold active:scale-95 transition-all shadow-lg shadow-primary/20 whitespace-nowrap">
+                            Add Idea
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full mt-auto border-t border-slate-100 dark:border-slate-900 bg-slate-50 dark:bg-slate-950">
+        <div class="flex flex-col md:flex-row justify-between items-center px-8 py-12 max-w-[1000px] mx-auto gap-4">
+            <span class="text-xs font-normal text-slate-500 dark:text-slate-400">© 2024 Insight Curator. Built for product excellence.</span>
+            <div class="flex gap-6">
+                <a class="text-xs font-normal text-slate-500 dark:text-slate-400 hover:text-sky-600 hover:underline underline-offset-4 transition-all opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+                <a class="text-xs font-normal text-slate-500 dark:text-slate-400 hover:text-sky-600 hover:underline underline-offset-4 transition-all opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+                <a class="text-xs font-normal text-slate-500 dark:text-slate-400 hover:text-sky-600 hover:underline underline-offset-4 transition-all opacity-80 hover:opacity-100" href="#">Status</a>
+                <a class="text-xs font-normal text-slate-500 dark:text-slate-400 hover:text-sky-600 hover:underline underline-offset-4 transition-all opacity-80 hover:opacity-100" href="#">Contact Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App Logic -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
